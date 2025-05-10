@@ -1,0 +1,30 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle Mystique</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Oracle Mystique</h1>
+        <p id="instruction">Concentrez-vous sur votre question, puis cliquez sur la carte pour recevoir un message de l'oracle.</p>
+        
+        <div class="card" id="oracle-card">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-pattern">?</div>
+                </div>
+                <div class="card-back">
+                    <p id="oracle-message"></p>
+                </div>
+            </div>
+        </div>
+        
+        <button id="reset-button" class="hidden">Tirer une nouvelle carte</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
