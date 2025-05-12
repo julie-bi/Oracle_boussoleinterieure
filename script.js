@@ -1,4 +1,4 @@
-// script.js - Compatible avec le format TSV
+// script.js - Version simplifiée et fiable
 document.addEventListener('DOMContentLoaded', function() {
     // Éléments DOM
     const card = document.getElementById('oracle-card');
@@ -6,164 +6,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const instruction = document.getElementById('instruction');
     const resetButton = document.getElementById('reset-button');
     
-    // URL de la feuille Google Sheets publiée en format TSV
-    const sheetsURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx12BYMLCX5mBeGQEMP5uVFjttHL_EAzArFf2ePEiB_GgTWqSs8v459BpzJF6wsarr0bG2j_LTnBiJ/pub?gid=0&single=true&output=tsv';
-    
-    // Messages de secours au cas où la récupération échoue
-    const fallbackMessages = [
-        "Aaaaahhhhh parfois l'informatique ça ne marche pas. Réessaye à un autre moment"
+    // Messages de l'oracle directement dans le code
+    // Pour modifier vos messages, remplacez simplement ce tableau
+    const oracleMessages = [
+       "Et si tu faisais confiance à ce que tu sais déjà, qu'est-ce que tu ferais ?",
+"Quel est le mouvement que tu refuses de laisser venir ?",
+"À quelles représentations de ce que ta réalité devrait ressembler tu t'accroches encore ? Il est temps de te laisser surprendre, et d'avancer sans savoir ce que tu vas trouver.",
+"Ce n'est pas parce que tu ne perçois pas les possibilités qu'elles n'existent pas. Fais confiance en ton chemin.",
+"Émerveille-toi de ce que tu crées.",
+"À quel moment c'est devenu si sérieux que tu en as perdu le sens de ce que tu fais ?",
+"Quel poids fais-tu porter sur ta création ?",
+"Agis comme si c'était ce qu'il y avait de plus précieux et de plus insignifiant au monde.",
+"Est-ce que ce désir est le tien ou celui du voisin ?",
+"Et si tu laissais l'amour te guider ? Quel serait le prochain pas que ton cœur ferait ?",
+"Il est temps de lâcher le BIEN faire pour se reconnecter à ce qui serait BON de faire.",
+"Il est temps de mettre plus de toi dans ce que tu fais.",
+"Qu'est-ce qui compte vraiment pour toi en ce moment ? Agis à partir de là.",
+"Qu'est-ce que tu essaies de ne pas ressentir quand tu fais ça ? Fais de la place pour ça, ça a le droit d'être là.",
+"Qu'est-ce que tu aimerais qu'il se passe vraiment ?",
+"Quels sont les jugements sur ta création que tu rends plus vrais que la réalité ?",
+"Tu n'es pas là pour réussir, tu es là pour expérimenter, apprendre, grandir.",
+"Y a-t-il un chemin plus simple, plus léger, plus joyeux que tu peux emprunter pour avancer ?",
+"Quelles sont les attentes qui ne servent plus ton projet ? Il est temps de les laisser partir.",
+"Parfois abandonner un projet, une idée, un résultat, est un acte d'amour pour soi.",
+"Fais confiance en ton idée, si elle t'a trouvé·e c'est que vous avez quelque chose à créer ensemble.",
+"Rappelle-toi qu'il existe un espace si vaste en toi qui peut tout accueillir. Retourne à cet endroit.",
+"Quelle part de toi s'exprime quand tu agis comme ça ? Quel message a-t-elle pour toi ?",
+"Tu n'as pas besoin de connaître le chemin pour avancer.",
+"Laisse ton art te guider, ta vérité te trouver.",
+"Qu'est-ce que ton ventre, ton cœur, ta tête te disent à propos de ça ? Comment peux-tu honorer chaque message et avancer avec tout ça ?",
+"Il est temps de te donner tes propres autorisations.",
+"Tu peux avancer avec la peur de ne pas y arriver, de ne pas être à la hauteur, de te tromper.",
+"Tu as besoin de ton énergie pour avancer, comment vas-tu la nourrir aujourd'hui ?",
+"Es-tu prêt·e à tout recevoir, qu'est-ce que tu oserais si tu t'ouvrais à tout recevoir ?",
+"Tu n'as pas besoin d'être ailleurs que là où tu es. Qu'est-ce que tu peux créer à partir de ce qui est présent ?",
+"Si tu arrêtes de fonctionner à partir du passé ou d'anticiper le futur, qu'est-ce que le moment présent te demande ?",
+"Et si tu avais totalement foi en toi, qu'est-ce que tu ferais ?",
+"Tu as le rythme parfait pour ce que tu vis en ce moment.",
+"Que se passe-t-il quand tu honores ton tempo et pas celui imposé par l'extérieur ?"
+
+        // Ajoutez ici tous vos messages d'oracle personnels, séparés par des virgules
     ];
-    
-    // Clé de chiffrement simple
-    const encryptionKey = 'oracle2025';
-    
-    // Fonctions de chiffrement/déchiffrement
-    function encrypt(text, key) {
-        let result = '';
-        for(let i = 0; i < text.length; i++) {
-            const charCode = text.charCodeAt(i);
-            const keyChar = key.charCodeAt(i % key.length);
-            result += String.fromCharCode(charCode ^ keyChar);
-        }
-        return btoa(result); // Convertit en base64 pour stockage
-    }
-    
-    function decrypt(encoded, key) {
-        try {
-            const text = atob(encoded); // Décode du base64
-            let result = '';
-            for(let i = 0; i < text.length; i++) {
-                const charCode = text.charCodeAt(i);
-                const keyChar = key.charCodeAt(i % key.length);
-                result += String.fromCharCode(charCode ^ keyChar);
-            }
-            return result;
-        } catch(e) {
-            console.error('Erreur de déchiffrement:', e);
-            return '';
-        }
-    }
-    
-    // Fonction pour traiter le TSV proprement
-    function parseTSV(tsvText) {
-        // Si le texte commence par <!DOCTYPE ou <html, ce n'est pas un TSV valide
-        if (tsvText.trim().startsWith('<!DOCTYPE') || tsvText.trim().startsWith('<html')) {
-            console.error('Le contenu récupéré ne semble pas être un TSV valide');
-            return [];
-        }
-        
-        // Diviser par lignes et filtrer les lignes vides
-        return tsvText.split('\n')
-            .map(line => {
-                // Pour TSV, on divise par tabulations et on prend la première colonne
-                const columns = line.split('\t');
-                return columns[0].trim();
-            })
-            .filter(line => line.length > 0);
-    }
-    
-    // Fonction pour charger les messages
-    async function loadMessages() {
-        try {
-            // Vérifier s'il y a des messages en cache
-            const cachedData = localStorage.getItem('oracleMessages');
-            const lastUpdate = localStorage.getItem('oracleLastUpdate');
-            const now = new Date().getTime();
-            
-            // Si le cache existe et a moins de 24h
-            if (cachedData && lastUpdate && now - parseInt(lastUpdate) < 86400000) {
-                try {
-                    // Utiliser le cache
-                    const decryptedData = decrypt(cachedData, encryptionKey);
-                    const parsedData = JSON.parse(decryptedData);
-                    
-                    // Vérifier que le cache contient des données valides
-                    if (Array.isArray(parsedData) && parsedData.length > 0) {
-                        console.log('Utilisation du cache local');
-                        return parsedData;
-                    }
-                } catch (e) {
-                    console.error('Erreur lors de la lecture du cache:', e);
-                    // Continue vers le chargement depuis Google Sheets
-                }
-            }
-            
-            // Sinon, charger depuis Google Sheets
-            instruction.textContent = "Chargement des messages...";
-            
-            console.log('Chargement depuis l\'URL:', sheetsURL);
-            const response = await fetch(sheetsURL);
-            const tsvData = await response.text();
-            
-            console.log('Données reçues (premiers caractères):', tsvData.substring(0, 100));
-            
-            // Traiter le TSV
-            const messages = parseTSV(tsvData);
-            
-            if (messages.length === 0) {
-                console.warn('Aucun message trouvé dans le TSV ou format invalide');
-                // Utiliser les messages de secours
-                return fallbackMessages;
-            }
-            
-            // Sauvegarder dans le stockage local (chiffré)
-            const encryptedData = encrypt(JSON.stringify(messages), encryptionKey);
-            localStorage.setItem('oracleMessages', encryptedData);
-            localStorage.setItem('oracleLastUpdate', now.toString());
-            
-            return messages;
-        } catch (error) {
-            console.error('Erreur lors du chargement des messages:', error);
-            
-            // En cas d'erreur, essayer d'utiliser le cache même s'il est ancien
-            const cachedData = localStorage.getItem('oracleMessages');
-            if (cachedData) {
-                try {
-                    const decryptedData = decrypt(cachedData, encryptionKey);
-                    const parsedData = JSON.parse(decryptedData);
-                    if (Array.isArray(parsedData) && parsedData.length > 0) {
-                        return parsedData;
-                    }
-                } catch (e) {
-                    console.error('Erreur lors de la lecture du cache de secours:', e);
-                }
-            }
-            
-            // Si rien ne fonctionne, utiliser les messages de secours
-            return fallbackMessages;
-        }
-    }
-    
-    // Initialisation
-    let oracleMessages = [];
-    
-    // Désactiver la carte pendant le chargement
-    card.style.opacity = "0.5";
-    card.style.pointerEvents = "none";
-    
-    // Charger les messages
-    loadMessages().then(messages => {
-        oracleMessages = messages;
-        
-        // Réinitialiser l'instruction une fois chargé
-        instruction.textContent = "Concentrez-vous sur votre question, puis cliquez sur la carte pour recevoir un message de l'oracle.";
-        
-        // Activer la carte
-        card.style.opacity = "1";
-        card.style.pointerEvents = "auto";
-    }).catch(error => {
-        console.error('Erreur finale:', error);
-        // Utiliser les messages de secours en cas d'erreur
-        oracleMessages = fallbackMessages;
-        
-        instruction.textContent = "Concentrez-vous sur votre question, puis cliquez sur la carte pour recevoir un message de l'oracle.";
-        card.style.opacity = "1";
-        card.style.pointerEvents = "auto";
-    });
     
     // Gestionnaire d'événement pour le clic sur la carte
     card.addEventListener('click', function() {
-        if (!card.classList.contains('flipped') && oracleMessages.length > 0) {
+        if (!card.classList.contains('flipped')) {
             // Sélectionne un message aléatoire
             const randomIndex = Math.floor(Math.random() * oracleMessages.length);
             message.textContent = oracleMessages[randomIndex];
