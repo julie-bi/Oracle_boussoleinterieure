@@ -94,19 +94,11 @@ p {
 }
 
 .card-front {
-    background: linear-gradient(145deg, #f091dd, #8db0ea, #90d9b4, #f8d776);
-    background-size: 300% 300%;
-    animation: cardGradient 5s ease infinite;
-    color: white;
-    font-size: 3rem;
-    font-weight: bold;
+    background-image: url('card-back.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
-@keyframes cardGradient {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
-}
 
 .card-pattern {
     font-size: 5rem;
