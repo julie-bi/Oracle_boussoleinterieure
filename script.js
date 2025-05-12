@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
             card.classList.add('flipped');
             
             // Change l'instruction
-            instruction.textContent = "Voici votre message de l'oracle.";
+            instruction.textContent = "Voici ton message.";
             
             // Affiche le bouton de réinitialisation
             resetButton.classList.remove('hidden');
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Réinitialise l'état
         card.classList.remove('flipped');
-        instruction.textContent = "Concentrez-vous sur votre question, puis cliquez sur la carte pour recevoir un message de l'oracle.";
+        instruction.textContent = "Concentre-toi sur la situation ou l'action pour laquelle tu cherches à te réaligner. Prends une grande inspiration et expiration puis clique sur la carte pour recevoir ton message.";
         resetButton.classList.add('hidden');
         
         // Petit délai pour effacer le message après l'animation
