@@ -1,4 +1,4 @@
-// script.js - Solution hybride avec chiffrement et stockage local
+// script.js - Compatible avec le format TSV
 document.addEventListener('DOMContentLoaded', function() {
     // Éléments DOM
     const card = document.getElementById('oracle-card');
@@ -6,10 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const instruction = document.getElementById('instruction');
     const resetButton = document.getElementById('reset-button');
     
-    // URL de la feuille Google Sheets publiée (À REMPLACER par votre URL)
-    const sheetsURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx12BYMLCX5mBeGQEMP5uVFjttHL_EAzArFf2ePEiB_GgTWqSs8v459BpzJF6wsarr0bG2j_LTnBiJ/pubhtml?gid=0&single=true';
+    // URL de la feuille Google Sheets publiée en format TSV
+    const sheetsURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx12BYMLCX5mBeGQEMP5uVFjttHL_EAzArFf2ePEiB_GgTWqSs8v459BpzJF6wsarr0bG2j_LTnBiJ/pub?gid=0&single=true&output=tsv';
     
-    // Clé de chiffrement simple (vous pouvez la changer)
+    // Messages de secours au cas où la récupération échoue
+    const fallbackMessages = [
+        "Aaaaahhhhh parfois l'informatique ça ne marche pas. Réessaye à un autre moment"
+    ];
+    
+    // Clé de chiffrement simple
     const encryptionKey = 'oracle2025';
     
     // Fonctions de chiffrement/déchiffrement
@@ -39,6 +44,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Fonction pour traiter le TSV proprement
+    function parseTSV(tsvText) {
+        // Si le texte commence par <!DOCTYPE ou <html, ce n'est pas un TSV valide
+        if (tsvText.trim().startsWith('<!DOCTYPE') || tsvText.trim().startsWith('<html')) {
+            console.error('Le contenu récupéré ne semble pas être un TSV valide');
+            return [];
+        }
+        
+        // Diviser par lignes et filtrer les lignes vides
+        return tsvText.split('\n')
+            .map(line => {
+                // Pour TSV, on divise par tabulations et on prend la première colonne
+                const columns = line.split('\t');
+                return columns[0].trim();
+            })
+            .filter(line => line.length > 0);
+    }
+    
     // Fonction pour charger les messages
     async function loadMessages() {
         try {
@@ -49,21 +72,39 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Si le cache existe et a moins de 24h
             if (cachedData && lastUpdate && now - parseInt(lastUpdate) < 86400000) {
-                // Utiliser le cache
-                const decryptedData = decrypt(cachedData, encryptionKey);
-                return JSON.parse(decryptedData);
+                try {
+                    // Utiliser le cache
+                    const decryptedData = decrypt(cachedData, encryptionKey);
+                    const parsedData = JSON.parse(decryptedData);
+                    
+                    // Vérifier que le cache contient des données valides
+                    if (Array.isArray(parsedData) && parsedData.length > 0) {
+                        console.log('Utilisation du cache local');
+                        return parsedData;
+                    }
+                } catch (e) {
+                    console.error('Erreur lors de la lecture du cache:', e);
+                    // Continue vers le chargement depuis Google Sheets
+                }
             }
             
             // Sinon, charger depuis Google Sheets
             instruction.textContent = "Chargement des messages...";
             
+            console.log('Chargement depuis l\'URL:', sheetsURL);
             const response = await fetch(sheetsURL);
-            const csvData = await response.text();
+            const tsvData = await response.text();
             
-            // Traitement simple du CSV (une ligne = un message)
-            const messages = csvData.split('\n')
-                .map(line => line.trim())
-                .filter(line => line.length > 0);
+            console.log('Données reçues (premiers caractères):', tsvData.substring(0, 100));
+            
+            // Traiter le TSV
+            const messages = parseTSV(tsvData);
+            
+            if (messages.length === 0) {
+                console.warn('Aucun message trouvé dans le TSV ou format invalide');
+                // Utiliser les messages de secours
+                return fallbackMessages;
+            }
             
             // Sauvegarder dans le stockage local (chiffré)
             const encryptedData = encrypt(JSON.stringify(messages), encryptionKey);
@@ -77,12 +118,19 @@ document.addEventListener('DOMContentLoaded', function() {
             // En cas d'erreur, essayer d'utiliser le cache même s'il est ancien
             const cachedData = localStorage.getItem('oracleMessages');
             if (cachedData) {
-                const decryptedData = decrypt(cachedData, encryptionKey);
-                return JSON.parse(decryptedData);
+                try {
+                    const decryptedData = decrypt(cachedData, encryptionKey);
+                    const parsedData = JSON.parse(decryptedData);
+                    if (Array.isArray(parsedData) && parsedData.length > 0) {
+                        return parsedData;
+                    }
+                } catch (e) {
+                    console.error('Erreur lors de la lecture du cache de secours:', e);
+                }
             }
             
-            // Si vraiment rien ne fonctionne, retourner un tableau vide
-            return [];
+            // Si rien ne fonctionne, utiliser les messages de secours
+            return fallbackMessages;
         }
     }
     
@@ -104,8 +152,13 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.opacity = "1";
         card.style.pointerEvents = "auto";
     }).catch(error => {
-        console.error('Erreur:', error);
-        instruction.textContent = "Impossible de charger les messages. Veuillez rafraîchir la page.";
+        console.error('Erreur finale:', error);
+        // Utiliser les messages de secours en cas d'erreur
+        oracleMessages = fallbackMessages;
+        
+        instruction.textContent = "Concentrez-vous sur votre question, puis cliquez sur la carte pour recevoir un message de l'oracle.";
+        card.style.opacity = "1";
+        card.style.pointerEvents = "auto";
     });
     
     // Gestionnaire d'événement pour le clic sur la carte
