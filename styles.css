@@ -1,16 +1,13 @@
 /* 
- * styles.css pour Oracle Mystique
+ * styles.css pour Oracle de Retour à Soi
  * © 2025 Julie Bierge. Tous droits réservés.
  */
-
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
 body {
     font-family: 'Quicksand', sans-serif;
     background-color: #faf8f5;
@@ -20,7 +17,6 @@ body {
     min-height: 100vh;
     padding: 1rem;
 }
-
 .container {
     max-width: 500px;
     text-align: center;
@@ -29,7 +25,6 @@ body {
     border-radius: 20px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
 }
-
 h1 {
     font-size: 2.5rem;
     font-weight: 700;
@@ -47,19 +42,16 @@ h1 {
     animation: gradient 8s linear infinite;
     letter-spacing: 0.5px;
 }
-
 @keyframes gradient {
     0% {background-position: 0% center;}
     100% {background-position: 200% center;}
 }
-
 p {
     color: #5a6377;
     margin-bottom: 2rem;
     line-height: 1.6;
     font-size: 1.1rem;
 }
-
 .card {
     width: 280px;
     height: 400px;
@@ -67,7 +59,6 @@ p {
     margin: 0 auto 2.5rem;
     cursor: pointer;
 }
-
 .card-inner {
     position: relative;
     width: 100%;
@@ -75,11 +66,9 @@ p {
     transition: transform 0.8s;
     transform-style: preserve-3d;
 }
-
 .card.flipped .card-inner {
     transform: rotateY(180deg);
 }
-
 .card-front, .card-back {
     position: absolute;
     width: 100%;
@@ -92,35 +81,29 @@ p {
     align-items: center;
     padding: 1.5rem;
 }
-
 .card-front {
     background-image: url('card-back.jpg');
     background-size: cover;
     background-position: center;
 }
-
-
 .card-pattern {
     /* Gardé vide pour l'image de fond */
 }
-
 .card-back {
     background-color: white;
     transform: rotateY(180deg);
-    border: 4px solid transparent;
-    background-image: linear-gradient(white, white), 
-                      linear-gradient(to right, #f091dd, #8db0ea, #90d9b4, #f8d776);
-    background-origin: border-box;
-    background-clip: content-box, border-box;
+    /* Bordure simple au lieu du dégradé */
+    border: 2px solid #f8d776;
 }
-
 #oracle-message {
     font-size: 1.3rem;
     color: #3b395e;
     font-weight: 500;
     line-height: 1.6;
+    /* Ajout pour gérer les longs messages */
+    max-height: 350px;
+    overflow-y: auto;
 }
-
 button {
     background: linear-gradient(to right, #f091dd, #8db0ea);
     color: white;
@@ -134,16 +117,13 @@ button {
     transition: all 0.3s;
     box-shadow: 0 4px 15px rgba(141, 176, 234, 0.4);
 }
-
 button:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(141, 176, 234, 0.6);
 }
-
 .hidden {
     display: none;
 }
-
 /* Style pour le copyright */
 .copyright {
     margin-top: 2.5rem;
@@ -151,12 +131,10 @@ button:hover {
     color: #a1a8b8;
     text-align: center;
 }
-
 .copyright p {
     margin: 0.25rem 0;
     font-size: 0.8rem;
 }
-
 /* Responsive adjustments */
 @media (max-width: 600px) {
     h1 {
@@ -174,6 +152,7 @@ button:hover {
     
     #oracle-message {
         font-size: 1.2rem;
+        max-height: 330px;
     }
     
     button {
