@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resetButton = document.getElementById('reset-button');
     
     // URL de la feuille Google Sheets publiée (À REMPLACER par votre URL)
-    const sheetsURL = 'https://docs.google.com/spreadsheets/d/e/VOTRE_ID_DE_FEUILLE/pub?output=csv';
+    const sheetsURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx12BYMLCX5mBeGQEMP5uVFjttHL_EAzArFf2ePEiB_GgTWqSs8v459BpzJF6wsarr0bG2j_LTnBiJ/pubhtml?gid=0&single=true';
     
     // Clé de chiffrement simple (vous pouvez la changer)
     const encryptionKey = 'oracle2025';
