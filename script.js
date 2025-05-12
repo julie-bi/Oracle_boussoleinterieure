@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 "À quelles représentations de ce que ta réalité devrait ressembler tu t'accroches encore ? Il est temps de te laisser surprendre, et d'avancer sans savoir ce que tu vas trouver.",
 "Ce n'est pas parce que tu ne perçois pas les possibilités qu'elles n'existent pas. Fais confiance en ton chemin.",
 "Émerveille-toi de ce que tu crées.",
-"À quel moment c'est devenu si sérieux que tu en as perdu le sens de ce que tu fais ?",
+"À quel moment c'est devenu si sérieux que tu as perdu le sens de ce que tu fais ? Remets du jeu !",
 "Quel poids fais-tu porter sur ta création ?",
 "Agis comme si c'était ce qu'il y avait de plus précieux et de plus insignifiant au monde.",
 "Est-ce que ce désir est le tien ou celui du voisin ?",
