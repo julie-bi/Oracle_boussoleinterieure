@@ -29,22 +29,8 @@ h1 {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    background: linear-gradient(90deg, 
-        #f091dd 0%, 
-        #8db0ea 20%, 
-        #90d9b4 40%, 
-        #f8d776 60%, 
-        #f091dd 80%);
-    background-size: 200% auto;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: gradient 8s linear infinite;
+    color: #f8d776; /* Jaune uni de la palette */
     letter-spacing: 0.5px;
-}
-@keyframes gradient {
-    0% {background-position: 0% center;}
-    100% {background-position: 200% center;}
 }
 p {
     color: #5a6377;
